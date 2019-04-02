@@ -1,3 +1,4 @@
+
 boolean mouseSeek =false;
 float sepSize = 5;
 float r =2;
@@ -17,7 +18,7 @@ class Sand
   float c;      //摩擦力常熟
   float mass;      //质量  质量越大正向力越大
   float life;
-  
+
   Sand(float x, float y, color tc) {
     c = 0.03;
     targetC = tc;
@@ -29,15 +30,21 @@ class Sand
     maxforce = 0.02;
     maxspeed = 3;
     brushSize = 60;
+
   }
 
   void run(ArrayList<Sand> ds) {
     behavior();
     update();
-        firction();
+    firction();
 
-    if(life==0 ){
+    if (life==0 ) {
       loc = origin;
+    }
+    if (loc.x> width-10 || loc.x <10) {
+      vel.mult(-0.5);
+    } else if (loc.y >height-10 || loc.y <10) {
+      vel.mult(-0.5);
     }
     //display();
   }
@@ -73,12 +80,14 @@ class Sand
   }
 
   void display() {
-     int x = round(loc.x);
-     int y = round(loc.y);
-     
-    for( int i=0; i< r; i++){
-      for(int j =0; j<r; j++){
-            set(x+i,y+j,targetC);
+    int x = round(loc.x);
+    int y = round(loc.y);
+    canvas.loadPixels();
+    for ( int i=0; i< r; i++) {
+      for (int j =0; j<r; j++) {
+        //set(x+i, y+j, targetC);
+        if (loc.x >5 && loc.x <width-5 && loc.y >5 && loc.y <height-5)
+          canvas.pixels[(y+j)*width+(x+i)] = targetC;
       }
     }
   }
@@ -96,8 +105,6 @@ class Sand
     //firction();
 
     acc.mult(0);
-    
-
   }
 
   PVector mouseAttactor() {
@@ -108,12 +115,12 @@ class Sand
     PVector mvel = new PVector(vx, vy);
 
     float d = PVector.dist(loc, mouse);
-    
+
     if (d <brushSize) {
 
-      PVector steer = PVector.sub(mvel,vel);
+      PVector steer = PVector.sub(mvel, vel);
       steer.mult((1-d/brushSize)*0.5);
-      
+
       life = vel.mag();
       return steer;
     }
